@@ -7,16 +7,24 @@ export const dummy = {
         first(state, payload) {
             return {
                 ...state,
-                value: [...payload]
+                value: [...state.value, ...payload]
             }
         },
 
         second(state, payload) {
             return {
                 ...state,
-                value: [...payload]
+                value: [...state.value, ...payload]
             }
         }
-    }
+    },
+    effects: (dispatch) => ({
+        async firstPromise(payload) {
+            dispatch.dummy.first(payload)
+        },
+        async secondPromise(payload) {
+            dispatch.dummy.second(payload)
+        }
+    })
 }
 

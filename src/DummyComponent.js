@@ -2,23 +2,31 @@ import React, {useEffect} from 'react'
 import { connect } from 'react-redux'
 
 const DummyComponent = (props) => {
-
-    const { first, second } = props
+    const { first, second, value } = props
 
     useEffect(() => {
         first(['Hello']).then(() => {
             second(['world'])
         })
-    }, [first, second])
+        // you don't need to listen changes on first or second, cuz they're pure functions
+        // you can perfectly ignore this recomendation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
-    return (<div>Hello world</div>)
+    return (
+        <div>
+            {JSON.stringify(value)}
+        </div>
+    )
 }
 
-const mapDispatch = (dispatch) => {
-    return {
-        first: (value) => dispatch.dummy.first(value),
-        second: (value) => dispatch.dummy.second(value)
-    }
-}
+const mapDispatch = (dispatch) => ({
+    first: (value) => dispatch.dummy.firstPromise(value),
+    second: (value) => dispatch.dummy.secondPromise(value)
+})
 
-export default connect(null, mapDispatch)(DummyComponent)
+const mapStateToProps = (state) => ({
+    value: state.dummy.value
+})
+
+export default connect(mapStateToProps, mapDispatch)(DummyComponent)
